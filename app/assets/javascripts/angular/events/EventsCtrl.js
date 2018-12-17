@@ -12,11 +12,42 @@ app.controller('EventsCtrl', ['$scope', 'Event', function($scope, Event){
         $scope.events.push(response);
       },
       function(response){
-        alert('Error: ' + response.data.error.join('. '));
+        alert('Errors: ' + response.data.errors.join('. '));
       }
     );
 
     $scope.event = {};
+  };
+
+  $scope.editing = {};
+
+  $scope.toggleForm = function(event){
+    if(event.id === $scope.editing.id){
+      return 'form'
+    }
+    else {
+      return 'row'
+    }
+  };
+
+  $scope.editEvent = function(event){
+    $scope.editing = angular.copy(event);
+  };
+
+  $scope.updateEvent = function(index){
+    Event.update($scope.editing,
+      function(response, _headers){
+        $scope.events[index] = angular.copy($scope.editing);
+        $scope.hideForm();
+      },
+      function(response){
+        alert('Errors: ' + response.data.errors.join('. '));
+      }
+    );
+  };
+
+  $scope.hideForm = function(){
+    $scope.editing = {};
   };
 
   valid = function() {
